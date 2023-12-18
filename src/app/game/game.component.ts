@@ -4,9 +4,9 @@ import { PlayerComponent } from './../player/player.component';
 import { GameInfoComponent } from '../game-info/game-info.component';
 import { DialoagAddPlayerComponent } from '../dialoag-add-player/dialoag-add-player.component';
 import { MatDialog } from '@angular/material/dialog';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { Game } from './../../models/game';
 
 
@@ -49,6 +49,8 @@ export class GameComponent implements OnInit {
       console.log('New card:', this.currentCard);
       console.log(this.game);
 
+      this.game.currentPlayer++;
+      this.game.currentPlayer = this.game.currentPlayer % this.game.players.length;
       setTimeout(() => {
         this.game.playedCards.push(this.currentCard);
         this.pickCardAnimation = false;
@@ -60,7 +62,9 @@ export class GameComponent implements OnInit {
     const dialogRef = this.dialog.open(DialoagAddPlayerComponent);
 
     dialogRef.afterClosed().subscribe((name: string) => {
-      this.game.players.push(name);
+      if (name.length > 0) {
+        this.game.players.push(name);
+      }
     });
   }
 }
