@@ -10,6 +10,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { Game } from './../../models/game';
 
 
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+const firebaseConfig = {
+  apiKey: "AIzaSyBc7ukxaxeuUqLMnRQ-xcuaqQJS8HokR6w",
+  authDomain: "ring-of-fire-ecb74.firebaseapp.com",
+  projectId: "ring-of-fire-ecb74",
+  storageBucket: "ring-of-fire-ecb74.appspot.com",
+  messagingSenderId: "778799504260",
+  appId: "1:778799504260:web:d8fdbf91a0aa70a79b1bd1"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 @Component({
   selector: 'app-game',
   standalone: true,
