@@ -55,6 +55,7 @@
 .player-position {
     position: absolute;
     right: 0;
+    z-index: 1;
 }
 
 .btn-add {
@@ -69,4 +70,24 @@
     left: 100px;
     right: 100px;
     height: 100px;
+
+     @media (max-width: 720px) {
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+     }
+}
+
+.scroll-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    app-player-mobile {
+        margin-left: 8px;
+    }
 }
