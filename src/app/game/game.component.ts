@@ -12,6 +12,7 @@ import { Game } from './../../models/game';
 import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, query, orderBy, where, limit, setDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { EditPlayerComponent } from '../edit-player/edit-player.component';
 
 
 @Component({
@@ -21,6 +22,7 @@ import { ActivatedRoute } from '@angular/router';
     CommonModule,
     PlayerComponent,
     PlayerMobileComponent,
+    EditPlayerComponent,
     GameInfoComponent,
     DialoagAddPlayerComponent,
     MatDialogModule,
@@ -34,6 +36,7 @@ export class GameComponent implements OnInit {
 
   game!: Game;
   gameId!: string;
+  gameOver = false;
   firestore: Firestore = inject(Firestore);
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog) { }
@@ -56,6 +59,7 @@ export class GameComponent implements OnInit {
       this.game.currentPlayer = gameData!['currentPlayer'];
       this.game.playedCards = gameData!['playedCards'];
       this.game.players = gameData!['players'];
+      this.game.player_images = gameData!['player_images'];
       this.game.stack = gameData!['stack'];
       this.game.pickCardAnimation = gameData!['pickCardAnimation'];
       this.game.currentCard = gameData!['currentCard'];
@@ -83,7 +87,9 @@ export class GameComponent implements OnInit {
   }
 
   takeCard() {
-    if (!this.game.pickCardAnimation) {
+    if (this.game.stack.length == 0) {
+      this.gameOver = true;
+    } else if (!this.game.pickCardAnimation) {
       this.game.currentCard = this.game.stack.pop();
       this.game.pickCardAnimation = true;
       console.log('New card:', this.game.currentCard);
@@ -99,12 +105,32 @@ export class GameComponent implements OnInit {
     }
   }
 
+  editPlayer(playerId: number) {
+    console.log('Edit player', playerId);
+
+    const dialogRef = this.dialog.open(EditPlayerComponent);
+    dialogRef.afterClosed().subscribe((change: string) => {
+      console.log('Received change', change);
+      if (change) {
+        if (change == 'DELETE') {
+          this.game.players.splice(playerId, 1);
+          this.game.player_images.splice(playerId, 1);
+        } else {
+          this.game.player_images[playerId] = change;
+        }
+        this.safeGame();
+      }
+    });
+
+  }
+
   openDialog(): void {
     const dialogRef = this.dialog.open(DialoagAddPlayerComponent);
 
     dialogRef.afterClosed().subscribe((name: string) => {
       if (name && name.length > 0) {
         this.game.players.push(name);
+        this.game.player_images.push('1.webp');
         this.safeGame();
       }
     });
